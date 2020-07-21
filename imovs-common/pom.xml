@@ -47,12 +47,6 @@
             <groupId>com.ibeetl</groupId>
             <artifactId>beetl</artifactId>
         </dependency>
-
-        <!-- 日志框架依赖 -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

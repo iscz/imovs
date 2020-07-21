@@ -1,81 +1,96 @@
 package com.luuo.imovs.common.generator;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
+import com.baomidou.mybatisplus.generator.config.FileOutConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
+import com.baomidou.mybatisplus.generator.config.TemplateConfig;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.BeetlTemplateEngine;
+import com.luuo.imovs.common.ImovsCommonApplicationTests;
+import org.assertj.core.util.Lists;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 
 /*
     数据层内容生成
  */
-public class EntityGenerator {
+
+public class EntityGenerator extends ImovsCommonApplicationTests {
+
+    @Autowired
+    private DataSourceProperties dataSourceProperties;
 
     // 生成输出目录，定位到工程的java目录下
-    private String outputDir = "E:\\imovs\\src\\main\\java";
+    private String outputDir = System.getProperty("user.dir");
     // 生成类的作者
     private String author = "luuo";
-    // 数据源相关配置
-    private String url = "jdbc:mysql://47.100.207.165:3306/imovs?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC";
-    private String driverName = "com.mysql.cj.jdbc.Driver";
-    private String userName = "root";
-    private String userPwd = "xxx";
+
     // DAO的包路径
-    private final String mapperPackage = "com.luuo.imovs.common.mapper";
+    private final String parentPackage = "com.luuo.imovs.common";
     // 待生成的表名，注意是覆盖更新
     private static String[] tableNames;
 
     static {
         tableNames = new String[]{
-                "mooc_user"
+                "t_user_wxma"
         };
     }
+
 
     @Test
     public void entityGenerator() {
         AutoGenerator mpg = new AutoGenerator();
         mpg.setTemplateEngine(new BeetlTemplateEngine());
+
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir(outputDir);
+        gc.setOutputDir(outputDir + "/src/main/java");
         gc.setFileOverride(true);
-        gc.setActiveRecord(true);
+        //gc.setActiveRecord(false);
         gc.setEnableCache(false);
         gc.setBaseResultMap(true);
         gc.setBaseColumnList(false);
         gc.setAuthor(author);
+        gc.setMapperName("%sMapper");
+        gc.setXmlName("%sMapper");
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl(url);
-        // dsc.setSchemaName("public");
-        dsc.setDriverName(driverName);
-        dsc.setUsername(userName);
-        dsc.setPassword(userPwd);
+        dsc.setUrl(dataSourceProperties.getUrl());
+        dsc.setDriverName(dataSourceProperties.getDriverClassName());
+        dsc.setUsername(dataSourceProperties.getUsername());
+        dsc.setPassword(dataSourceProperties.getPassword());
         mpg.setDataSource(dsc);
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
-        //strategy.setTablePrefix(new String[]{"_"});// 此处可以修改为您的表前缀
+        //strategy.setSuperEntityColumns("id");
+        strategy.setTablePrefix("t_");// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
+        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setInclude(tableNames);
+        strategy.setEntitySerialVersionUID(false);
+        //生成的字段 是否添加注解，默认false
+        strategy.setEntityTableFieldAnnotationEnable(true);
+        //是否启用 Lombok
+        strategy.setEntityLombokModel(true);
         mpg.setStrategy(strategy);
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent(null);
-        pc.setEntity(mapperPackage + ".entity");
-        pc.setMapper(mapperPackage + ".mapper");
-        pc.setXml(mapperPackage + ".mapper.xml");
+        pc.setParent(parentPackage);
         mpg.setPackageInfo(pc);
 
         // 注入自定义配置，可以在 VM 中使用 cfg.abc 设置的值
@@ -87,9 +102,28 @@ public class EntityGenerator {
                 this.setMap(map);
             }
         };
+        cfg.setFileOutConfigList(Lists.newArrayList(new FileOutConfig("/templates/mapper.xml.btl") {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义mapper xml输出目录
+                return outputDir + "/src/main/resources/mapper/" + tableInfo.getMapperName() + StringPool.DOT_XML;
+            }
+        }));
 
         mpg.setCfg(cfg);
 
+        // 配置模板
+        TemplateConfig templateConfig = new TemplateConfig();
+
+        //控制 不生成 controller
+        templateConfig.setController("");
+        //控制 不生成 service
+        templateConfig.setService("");
+        //控制 不生成 serviceImpl
+        templateConfig.setServiceImpl("");
+        //控制 不生成 mapper.xml,因为上面设置生成了
+        templateConfig.setXml("");
+        mpg.setTemplate(templateConfig);
         // 执行生成
         mpg.execute();
 
