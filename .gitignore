@@ -3,3 +3,5 @@
 imovs-common/mvnw
 imovs-common/mvnw.cmd
 imovs-common/.mvn/
+imovs-user/.mvn/
+imovs-utils/.mvn/

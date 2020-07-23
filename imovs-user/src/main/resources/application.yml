@@ -12,7 +12,7 @@ mybatis-plus:
   # 扫描mapper.xml文件
   mapper-locations: classpath:mapper/*Mapper.xml
   # 扫描实体类
-  typeAliasesPackage: com.luuo.imovs.common.entity
+  typeAliasesPackage: com.luuo.imovs.user.entity
   # 主键类型
   global-config:
     #0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";

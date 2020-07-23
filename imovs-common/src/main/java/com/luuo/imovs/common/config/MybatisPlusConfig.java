@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement
-@MapperScan(basePackages = {"com.luuo.imovs.common.mapper"})
 public class MybatisPlusConfig {
 
     /**
