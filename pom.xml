@@ -19,6 +19,7 @@
         <module>imovs-common</module>
         <module>imovs-utils</module>
         <module>imovs-user</module>
+        <module>imovs-registry</module>
     </modules>
 
     <properties>
