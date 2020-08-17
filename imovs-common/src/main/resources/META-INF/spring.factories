@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.luuo.imovs.common.config.GlobalExceptionHandler,\
+com.luuo.imovs.common.config.MybatisPlusConfig

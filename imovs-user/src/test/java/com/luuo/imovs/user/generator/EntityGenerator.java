@@ -38,7 +38,8 @@ public class EntityGenerator extends ImovsUserApplicationTests {
 
     static {
         tableNames = new String[]{
-                "t_admin_user"
+                "t_admin_user",
+                "weibo"
         };
     }
 
